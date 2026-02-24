@@ -1,0 +1,67 @@
+﻿{% extends 'base.html' %}
+{% block title %}Главная{% endblock %}
+{% block content %}
+<section class="home-hero">
+  <div class="hero-copy">
+    <p class="kicker">Премьеры недели</p>
+    <h1>Кино-афиша и онлайн-билеты</h1>
+    <p>Выбирайте фильм, сеанс и место за пару минут. Весь каталог и бронирование в одном сервисе.</p>
+    <div class="hero-actions">
+      <a href="{% url 'core:movies' %}" class="btn-primary">Смотреть фильмы</a>
+      <a href="{% url 'core:schedule' %}" class="btn-secondary">Открыть расписание</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <strong>120+</strong>
+        <span>сеансов в день</span>
+      </div>
+      <div class="stat-item">
+        <strong>18</strong>
+        <span>кинотеатров</span>
+      </div>
+      <div class="stat-item">
+        <strong>4.8</strong>
+        <span>средняя оценка</span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-cards">
+    <article class="quick-card">
+      <h3>Сейчас в прокате</h3>
+      <p>Лучшие релизы этой недели.</p>
+      <a href="{% url 'core:movies' %}" class="card-link">Перейти</a>
+    </article>
+    <article class="quick-card">
+      <h3>Ближайшие сеансы</h3>
+      <p>Подборка сеансов на сегодня.</p>
+      <a href="{% url 'core:schedule' %}" class="card-link">Выбрать время</a>
+    </article>
+    <article class="quick-card">
+      <h3>Контакты</h3>
+      <p>Телефон, WhatsApp и email для связи.</p>
+      <a href="{% url 'core:contacts' %}" class="card-link">Связаться</a>
+    </article>
+  </div>
+</section>
+
+<section class="featured-grid">
+  <article class="featured-card">
+    <p class="featured-type">Экшен</p>
+    <h3>Ночной Экспресс</h3>
+    <p>Один рейс и одна ночь, чтобы остановить преступную группировку.</p>
+    <a href="{% url 'core:movies' %}" class="card-link">Подробнее</a>
+  </article>
+  <article class="featured-card">
+    <p class="featured-type">Фантастика</p>
+    <h3>Пыль Марса</h3>
+    <p>Экспедиция сталкивается с аномалией, меняющей представление о времени.</p>
+    <a href="{% url 'core:movies' %}" class="card-link">Подробнее</a>
+  </article>
+  <article class="featured-card">
+    <p class="featured-type">Триллер</p>
+    <h3>Город Теней</h3>
+    <p>Детектив расследует серию исчезновений в городе, где каждая улица хранит секрет.</p>
+    <a href="{% url 'core:movies' %}" class="card-link">Подробнее</a>
+  </article>
+</section>
+{% endblock %}

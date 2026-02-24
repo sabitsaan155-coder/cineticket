@@ -1,0 +1,135 @@
+﻿<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CSS Практика</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="menu">
+        <a href="#block">Блок</a>
+        <a href="#buttons">Кнопки</a>
+        <a href="#cards">Карточки</a>
+        <a href="#media">Медиа</a>
+        <a href="#mask">Маска</a>
+        <a href="#table">Таблица</a>
+        <a href="#grid">Grid</a>
+        <a href="#bem">BEM</a>
+      </nav>
+    </header>
+
+    <main class="page">
+      <section id="block" class="section">
+        <h1>Практика CSS</h1>
+        <div class="title-block">
+          <h2>Заголовок в блоке</h2>
+          <button class="hover-btn" type="button">Наведи на меня</button>
+        </div>
+      </section>
+
+      <section id="buttons" class="section">
+        <h2>Три кнопки</h2>
+        <div class="button-row">
+          <button class="btn primary" type="button">Primary</button>
+          <button class="btn secondary" type="button">Secondary</button>
+          <button class="btn danger" type="button">Danger</button>
+        </div>
+      </section>
+
+      <section id="cards" class="section">
+        <h2>Flexbox карточки</h2>
+        <div class="card-row">
+          <article class="card">
+            <h3>Карточка 1</h3>
+            <p>Краткое описание первой карточки.</p>
+          </article>
+          <article class="card">
+            <h3>Карточка 2</h3>
+            <p>Краткое описание второй карточки.</p>
+          </article>
+          <article class="card">
+            <h3>Карточка 3</h3>
+            <p>Краткое описание третьей карточки.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="media" class="section">
+        <h2>Медиа-запрос</h2>
+        <p>Измените размер окна, чтобы увидеть уменьшение h1.</p>
+      </section>
+
+      <section id="mask" class="section">
+        <h2>Фоновое изображение и маска</h2>
+        <div class="hero">
+          <div class="hero__overlay">
+            <p>Текст поверх изображения</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="table" class="section">
+        <h2>Таблица с чередованием строк</h2>
+        <table class="striped-table">
+          <thead>
+            <tr>
+              <th>Имя</th>
+              <th>Город</th>
+              <th>Возраст</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Алия</td>
+              <td>Алматы</td>
+              <td>22</td>
+            </tr>
+            <tr>
+              <td>Ерлан</td>
+              <td>Астана</td>
+              <td>25</td>
+            </tr>
+            <tr>
+              <td>Мадина</td>
+              <td>Шымкент</td>
+              <td>20</td>
+            </tr>
+            <tr>
+              <td>Тимур</td>
+              <td>Караганда</td>
+              <td>24</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section">
+        <h2>Анимированная кнопка</h2>
+        <button class="animated-btn" type="button">Наведи и увеличь</button>
+      </section>
+
+      <section id="grid" class="section">
+        <h2>CSS Grid 2x2</h2>
+        <div class="grid">
+          <div class="grid__item">Блок 1</div>
+          <div class="grid__item">Блок 2</div>
+          <div class="grid__item">Блок 3</div>
+          <div class="grid__item">Блок 4</div>
+        </div>
+      </section>
+
+      <section id="bem" class="section">
+        <h2>Карточка пользователя (BEM)</h2>
+        <article class="user-card">
+          <img class="user-card__avatar" src="https://via.placeholder.com/80" alt="Аватар" />
+          <div>
+            <div class="user-card__name">Сабит</div>
+            <div class="user-card__status">Онлайн</div>
+          </div>
+        </article>
+      </section>
+    </main>
+  </body>
+</html>

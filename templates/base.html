@@ -1,0 +1,58 @@
+﻿{% load static %}
+<!doctype html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}CineTicket{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/main.css' %}?v=20260224b">
+</head>
+<body>
+  <div class="bg-glow glow-a"></div>
+  <div class="bg-glow glow-b"></div>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="logo" href="{% url 'core:home' %}">CineTicket</a>
+      <nav class="nav">
+        <a href="{% url 'core:home' %}" class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}">Главная</a>
+        <a href="{% url 'core:movies' %}" class="nav-link {% if request.resolver_match.url_name == 'movies' %}active{% endif %}">Фильмы</a>
+        <a href="{% url 'core:schedule' %}" class="nav-link {% if request.resolver_match.url_name == 'schedule' %}active{% endif %}">Расписание</a>
+        <a href="{% url 'core:cinemas' %}" class="nav-link {% if request.resolver_match.url_name == 'cinemas' %}active{% endif %}">Кинотеатры</a>
+        <a href="{% url 'core:tickets' %}" class="nav-link {% if request.resolver_match.url_name == 'tickets' %}active{% endif %}">Билеты</a>
+        <a href="{% url 'core:contacts' %}" class="nav-link {% if request.resolver_match.url_name == 'contacts' %}active{% endif %}">Контакты</a>
+      </nav>
+      <button id="themeToggle" class="theme-toggle" type="button">Тема</button>
+    </div>
+  </header>
+
+  <main class="site-main">
+    <div class="container">
+      {% include 'partials/messages.html' %}
+      {% block content %}{% endblock %}
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <p><strong>CineTicket</strong></p>
+        <p>Кино-афиша и онлайн-билеты.</p>
+      </div>
+      <div>
+        <a href="tel:+77072982006" class="contact-link">+7 707 298 2006</a>
+        <a href="https://wa.me/77072982006" class="contact-link" target="_blank" rel="noopener noreferrer" aria-label="Написать в WhatsApp на номер +7 707 298 2006">WhatsApp</a>
+        <a href="mailto:sabitsaan155@gmail.com" class="contact-link">sabitsaan155@gmail.com</a>
+        <a href="{% url 'core:faq' %}" class="contact-link">FAQ</a>
+      </div>
+      <div>
+        <a href="{% url 'core:profile' %}" class="contact-link">Профиль</a>
+        <a href="{% url 'core:favorites' %}" class="contact-link">Избранное</a>
+        <a href="{% url 'core:checkout' %}" class="contact-link">Оформление</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="{% static 'js/main.js' %}?v=20260224b"></script>
+</body>
+</html>
