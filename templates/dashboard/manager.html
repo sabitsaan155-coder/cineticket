@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+
+{% block title %}Панель manager{% endblock %}
+
+{% block content %}
+<section class="schedule-page manager-dashboard">
+  <h1>Панель manager</h1>
+  <p class="cinemas-subtitle">Раздел для контент-менеджера: фильмы, сеансы, кинотеатры, тарифы и быстрый контроль наполнения сайта.</p>
+
+  <div class="manager-kpi-grid">
+    <article class="manager-kpi-card">
+      <span>Фильмов в каталоге</span>
+      <strong>{{ stats.movies_total }}</strong>
+      <small>В прокате: {{ stats.movies_now }} / Скоро: {{ stats.movies_soon }}</small>
+    </article>
+    <article class="manager-kpi-card">
+      <span>Кинотеатров</span>
+      <strong>{{ stats.cinemas_total }}</strong>
+      <small>Под контролем manager</small>
+    </article>
+    <article class="manager-kpi-card">
+      <span>Ближайших сеансов</span>
+      <strong>{{ stats.screenings_upcoming }}</strong>
+      <small>Активное расписание</small>
+    </article>
+    <article class="manager-kpi-card">
+      <span>Отзывов пользователей</span>
+      <strong>{{ stats.reviews_total }}</strong>
+      <small>Можно отслеживать качество каталога</small>
+    </article>
+  </div>
+
+  <div class="buy-layout">
+    <article class="ticket-prices">
+      <h2>Быстрые действия</h2>
+      <div class="manager-actions">
+        <a class="btn-primary" href="{{ admin_links.movies }}">Управлять фильмами</a>
+        <a class="btn-secondary" href="{{ admin_links.screenings }}">Сеансы</a>
+        <a class="btn-secondary" href="{{ admin_links.cinemas }}">Кинотеатры</a>
+        <a class="btn-secondary" href="{{ admin_links.prices }}">Тарифы</a>
+        <a class="btn-secondary" href="{{ admin_links.report }}">ORM-отчёт</a>
+      </div>
+      <p class="manager-note">Роль manager работает через Django Groups / Permissions. Если пользователь добавлен в группу <strong>Content Manager</strong>, он видит этот раздел и получает staff-доступ для админки каталога.</p>
+    </article>
+
+    <article class="ticket-prices">
+      <h2>Фильмы без тарифов</h2>
+      {% if movies_without_prices %}
+        <ul class="manager-list">
+          {% for movie in movies_without_prices %}
+            <li>
+              <strong>{{ movie.title }}</strong>
+              <span>{{ movie.release_year }}</span>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p>У всех фильмов уже настроены тарифы.</p>
+      {% endif %}
+    </article>
+  </div>
+
+  <div class="buy-layout">
+    <article class="ticket-prices">
+      <h2>Кинотеатры с наибольшей нагрузкой</h2>
+      <table class="tickets-table">
+        <thead>
+          <tr>
+            <th>Кинотеатр</th>
+            <th>Фильмов</th>
+            <th>Сеансов</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for cinema in overloaded_cinemas %}
+            <tr>
+              <td>{{ cinema.name }}</td>
+              <td>{{ cinema.movie_count }}</td>
+              <td>{{ cinema.screening_count }}</td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="3">Пока нет данных по кинотеатрам.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </article>
+
+    <article class="ticket-prices">
+      <h2>Фильмы с низкими отзывами</h2>
+      {% if low_review_movies %}
+        <ul class="manager-list">
+          {% for movie in low_review_movies %}
+            <li>
+              <strong>{{ movie.title }}</strong>
+              <span>Низких оценок: {{ movie.low_scores }} / Всего отзывов: {{ movie.review_count }}</span>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p>Низких пользовательских оценок пока нет.</p>
+      {% endif %}
+    </article>
+  </div>
+
+  <article class="ticket-prices">
+    <h2>Ближайшие сеансы</h2>
+    <table class="tickets-table">
+      <thead>
+        <tr>
+          <th>Фильм</th>
+          <th>Кинотеатр</th>
+          <th>Зал</th>
+          <th>Время</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for screening in recent_screenings %}
+          <tr>
+            <td>{{ screening.movie.title }}</td>
+            <td>{{ screening.hall.cinema.name }}</td>
+            <td>{{ screening.hall.name }}</td>
+            <td>{{ screening.start_at|date:'d.m.Y H:i' }}</td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="4">Сеансы пока не настроены.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </article>
+</section>
+{% endblock %}

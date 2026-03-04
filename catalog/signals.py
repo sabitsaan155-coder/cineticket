@@ -1,6 +1,9 @@
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, Permission
-from django.db.models.signals import post_migrate
+from django.db.models.signals import m2m_changed, post_migrate
 from django.dispatch import receiver
+
+from dashboard.permissions import STAFF_ROLE_GROUP_NAMES
 
 
 @receiver(post_migrate)
@@ -55,3 +58,19 @@ def setup_catalog_groups(sender, **kwargs):
 
     content_manager.permissions.set(manager_permissions)
     moderator.permissions.set(moderator_permissions)
+
+
+User = get_user_model()
+
+
+@receiver(m2m_changed, sender=User.groups.through)
+def sync_staff_flag_with_groups(sender, instance, action, **kwargs):
+    if action not in {"post_add", "post_remove", "post_clear"}:
+        return
+    if instance.is_superuser:
+        return
+
+    should_be_staff = instance.groups.filter(name__in=STAFF_ROLE_GROUP_NAMES).exists()
+    if instance.is_staff != should_be_staff:
+        instance.is_staff = should_be_staff
+        instance.save(update_fields=["is_staff"])

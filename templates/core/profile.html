@@ -46,6 +46,14 @@
     </form>
   </div>
 
+  {% if nav_is_manager %}
+    <div class="profile-card manager-profile-card">
+      <h2>Роль manager</h2>
+      <p>Вам доступна панель менеджера для управления фильмами, сеансами, кинотеатрами и тарифами.</p>
+      <a class="btn-secondary" href="{% url 'dashboard:manager' %}">Открыть панель manager</a>
+    </div>
+  {% endif %}
+
   <h2>История покупок</h2>
   {% if purchases %}
     <div class="tickets-table-wrap">

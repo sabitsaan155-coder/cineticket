@@ -38,6 +38,11 @@
             <a href="{% url 'core:contacts' %}" class="nav-link {% if request.resolver_match.url_name == 'contacts' %}active{% endif %}">Контакты</a>
           </li>
           {% if user.is_authenticated %}
+            {% if nav_is_manager %}
+            <li class="nav-item">
+              <a href="{% url 'dashboard:manager' %}" class="nav-link {% if request.resolver_match.app_name == 'dashboard' %}active{% endif %}">&#1052;&#1077;&#1085;&#1077;&#1076;&#1078;&#1077;&#1088;</a>
+            </li>
+            {% endif %}
             <li class="nav-item">
               <a href="{% url 'core:tickets' %}" class="nav-link {% if request.resolver_match.url_name == 'tickets' %}active{% endif %}">Билеты</a>
             </li>
