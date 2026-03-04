@@ -193,7 +193,7 @@ curl "http://127.0.0.1:8000/api/movies/the-godfather/"
 - [x] Пользователи: регистрация / логин / логаут
 - [x] Профиль пользователя, аватар и история покупок
 - [x] Пользователи и права доступа (`user`, `staff`, `admin`)
-- [х] Отдельная прикладная роль `manager` подготовлена через Django Groups / Permissions, но ещё не выведена в отдельный пользовательский сценарий
+- [x] Отдельная прикладная роль manager реализована: доступ через Django Groups / Permissions и отдельный пользовательский сценарий через Manager Dashboard.
 - [x] Кастомные страницы 404/500
 - [x] `.env.example`, `requirements.txt`, `.gitignore`
 - [x] MEDIA/STATIC настроены, `collectstatic` предусмотрен
