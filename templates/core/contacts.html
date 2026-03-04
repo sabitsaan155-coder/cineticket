@@ -1,4 +1,4 @@
-﻿{% extends 'base.html' %}
+{% extends 'base.html' %}
 {% block title %}Контакты{% endblock %}
 {% block content %}
 <section class="contacts-page">
@@ -7,13 +7,42 @@
   <article class="contact-card">
     <p class="contact-phone">+7 707 298 2006</p>
     <p class="contact-name">Сәбит Саян Асхатұлы</p>
-    <p class="contact-mail">sabitsaan155@gmail.com</p>
+    <p class="contact-mail"><a href="mailto:sabitsaan155@gmail.com">sabitsaan155@gmail.com</a></p>
   </article>
 
   <article class="contact-card">
     <p class="contact-phone">+7 707 815 34 17</p>
     <p class="contact-name">Гүльсым Жұмашева Бижановна</p>
-    <p class="contact-mail">gulsumzhumashev221@gmail.com</p>
+    <p class="contact-mail"><a href="mailto:gulsumzhumashev221@gmail.com">gulsumzhumashev221@gmail.com</a></p>
+  </article>
+
+  <article id="contact-form" class="contact-card">
+    <h2>Связаться с нами</h2>
+    <p class="movies-subtitle">Если почтовый клиент не открыт в браузере, отправьте сообщение через форму.</p>
+    <form method="post" class="buy-form contact-form">
+      {% csrf_token %}
+      {% if form.non_field_errors %}
+        <div class="form-error">{{ form.non_field_errors }}</div>
+      {% endif %}
+
+      <label for="{{ form.name.id_for_label }}">Ваше имя</label>
+      {{ form.name }}
+      {% if form.name.errors %}<div class="form-error">{{ form.name.errors }}</div>{% endif %}
+
+      <label for="{{ form.email.id_for_label }}">Ваш email</label>
+      {{ form.email }}
+      {% if form.email.errors %}<div class="form-error">{{ form.email.errors }}</div>{% endif %}
+
+      <label for="{{ form.phone.id_for_label }}">Телефон (необязательно)</label>
+      {{ form.phone }}
+      {% if form.phone.errors %}<div class="form-error">{{ form.phone.errors }}</div>{% endif %}
+
+      <label for="{{ form.message.id_for_label }}">Сообщение</label>
+      {{ form.message }}
+      {% if form.message.errors %}<div class="form-error">{{ form.message.errors }}</div>{% endif %}
+
+      <button type="submit" class="btn-primary">Отправить сообщение</button>
+    </form>
   </article>
 </section>
 {% endblock %}

@@ -1,3 +1,56 @@
-﻿{% extends 'base.html' %}
+{% extends 'base.html' %}
 {% block title %}Билеты{% endblock %}
-{% block content %}<section class="hero"><h1>Билеты</h1><p>Покупка и управление билетами.</p></section>{% endblock %}
+{% block content %}
+<section class="tickets-page">
+  <h1>Мои билеты</h1>
+
+  {% if purchases %}
+    <div class="tickets-table-wrap">
+      <table class="tickets-table">
+        <thead>
+          <tr>
+            <th>Фильм</th>
+            <th>Позиции</th>
+            <th>Итого</th>
+            <th>Дата</th>
+            <th>Действие</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for purchase in purchases %}
+            <tr>
+              <td>{{ purchase.movie_title }}</td>
+              <td>
+                {% if purchase.items.exists %}
+                  <ul class="purchase-items-list">
+                    {% for item in purchase.items.all %}
+                      <li>{{ item.get_ticket_type_display }}: {{ item.price_per_ticket }} ₸ × {{ item.quantity }} = {{ item.line_total }} ₸</li>
+                    {% endfor %}
+                  </ul>
+                {% else %}
+                  <ul class="purchase-items-list">
+                    <li>{{ purchase.get_ticket_type_display }}: {{ purchase.price_per_ticket }} ₸ × {{ purchase.quantity }} = {{ purchase.total_price }} ₸</li>
+                  </ul>
+                {% endif %}
+              </td>
+              <td>{{ purchase.total_price }} ₸</td>
+              <td>{{ purchase.created_at|date:"d.m.Y H:i" }}</td>
+              <td>
+                <form method="post" action="{% url 'core:cancel_ticket' purchase.id %}" data-confirm="Удалить покупку из истории?">
+                  {% csrf_token %}
+                  <button class="btn-secondary" type="submit">Удалить</button>
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="empty-tickets">
+      <p>У вас пока нет покупок.</p>
+      <a class="btn-primary" href="{% url 'core:movies' %}">Перейти к фильмам</a>
+    </div>
+  {% endif %}
+</section>
+{% endblock %}

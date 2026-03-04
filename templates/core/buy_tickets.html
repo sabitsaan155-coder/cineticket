@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}Покупка билетов{% endblock %}
+{% block content %}
+<section class="buy-page">
+  <h1>Покупка билетов</h1>
+  <p class="movies-subtitle"><strong>Фильм:</strong> {{ movie_title }}</p>
+
+  <div class="buy-layout">
+    <form method="post" class="buy-form">
+      {% csrf_token %}
+      {{ form.movie_title }}
+
+      <div class="family-ticket-grid">
+        <div>
+          <label for="{{ form.adult_qty.id_for_label }}">Взрослый</label>
+          {{ form.adult_qty }}
+          {% if form.adult_qty.errors %}<div class="form-error">{{ form.adult_qty.errors }}</div>{% endif %}
+        </div>
+        <div>
+          <label for="{{ form.student_qty.id_for_label }}">Студент</label>
+          {{ form.student_qty }}
+          {% if form.student_qty.errors %}<div class="form-error">{{ form.student_qty.errors }}</div>{% endif %}
+        </div>
+        <div>
+          <label for="{{ form.child_qty.id_for_label }}">Детский</label>
+          {{ form.child_qty }}
+          {% if form.child_qty.errors %}<div class="form-error">{{ form.child_qty.errors }}</div>{% endif %}
+        </div>
+      </div>
+
+      {% if form.non_field_errors %}
+        <div class="form-error">{{ form.non_field_errors }}</div>
+      {% endif %}
+
+      <p class="ticket-total-preview" data-ticket-total aria-live="polite"></p>
+      <button class="btn-primary" type="submit">Подтвердить покупку</button>
+    </form>
+
+    <aside class="ticket-prices">
+      <h3>Тарифы</h3>
+      <ul class="ticket-tariff-list">
+        {% for tariff in ticket_tariffs %}
+          <li data-ticket-code="{{ tariff.code }}" data-ticket-price="{{ tariff.price }}">{{ tariff.label }} — {{ tariff.price }} тг</li>
+        {% endfor %}
+      </ul>
+    </aside>
+  </div>
+</section>
+{% endblock %}

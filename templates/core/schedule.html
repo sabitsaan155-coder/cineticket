@@ -1,3 +1,33 @@
-﻿{% extends 'base.html' %}
+{% extends 'base.html' %}
 {% block title %}Расписание{% endblock %}
-{% block content %}<section class="hero"><h1>Расписание</h1><p>Сеансы и время показов.</p></section>{% endblock %}
+{% block content %}
+<section class="schedule-page">
+  <h1>Расписание</h1>
+
+  {% if selected_cinema %}
+    <p class="cinemas-subtitle">{{ selected_cinema.name }} · {{ selected_cinema.address }}</p>
+    <div class="schedule-grid">
+      {% for session in sessions %}
+        <article class="schedule-card">
+          <h3>{{ session.movie_title }}</h3>
+          <p><strong>Время сеанса:</strong> {{ session.show_time }}</p>
+          <p><strong>Прокат:</strong> {{ session.start_date }} — {{ session.end_date }}</p>
+          <p><strong>Номер зала:</strong> {{ session.hall }}</p>
+          <a class="btn-primary" href="{% url 'core:buy_tickets' %}?movie={{ session.movie_title|urlencode }}">Купить билеты</a>
+        </article>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="cinemas-subtitle">Сначала выберите кинотеатр. Для каждого кинотеатра показывается только его список фильмов.</p>
+    <div class="cinemas-grid">
+      {% for cinema in cinemas %}
+        <article class="cinema-card">
+          <h3>{{ cinema.name }}</h3>
+          <p>{{ cinema.address }}</p>
+          <a class="btn-secondary cinema-schedule-btn" href="{% url 'core:schedule_cinema' cinema.slug %}">Открыть расписание</a>
+        </article>
+      {% endfor %}
+    </div>
+  {% endif %}
+</section>
+{% endblock %}

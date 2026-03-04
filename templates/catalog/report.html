@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% block title %}ORM-отчет{% endblock %}
+{% block content %}
+<section class="schedule-page">
+  <h1>ORM-отчет по каталогу</h1>
+  <p class="cinemas-subtitle">Статистика считается через annotate/Count.</p>
+
+  <div class="buy-layout">
+    <article class="ticket-prices">
+      <h3>Фильмы по жанрам</h3>
+      <table class="tickets-table">
+        <thead>
+          <tr>
+            <th>Жанр</th>
+            <th>Кол-во фильмов</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in genre_stats %}
+            <tr>
+              <td>{{ item.name }}</td>
+              <td>{{ item.movie_count }}</td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="2">Нет данных. Запустите seed.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </article>
+
+    <article class="ticket-prices">
+      <h3>Статистика кинотеатров</h3>
+      <table class="tickets-table">
+        <thead>
+          <tr>
+            <th>Кинотеатр</th>
+            <th>Залов</th>
+            <th>Фильмов</th>
+            <th>Сеансов</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in cinema_stats %}
+            <tr>
+              <td>{{ item.name }}</td>
+              <td>{{ item.hall_count }}</td>
+              <td>{{ item.movie_count }}</td>
+              <td>{{ item.screening_count }}</td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="4">Нет данных. Запустите seed.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </article>
+  </div>
+
+  <article class="ticket-prices" style="margin-top: 14px;">
+    <h3>Пример optimized-query (select_related/prefetch_related)</h3>
+    <p class="movies-subtitle">Ниже первые 20 сеансов из ORM c join по фильму/залу/кинотеатру.</p>
+    <table class="tickets-table">
+      <thead>
+        <tr>
+          <th>Фильм</th>
+          <th>Кинотеатр</th>
+          <th>Зал</th>
+          <th>Формат</th>
+          <th>Сеанс</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for screening in screenings %}
+          <tr>
+            <td>{{ screening.movie.title }}</td>
+            <td>{{ screening.hall.cinema.name }}</td>
+            <td>{{ screening.hall.name }}</td>
+            <td>{{ screening.hall.format_type.name|default:"—" }}</td>
+            <td>{{ screening.start_at|date:"d.m.Y H:i" }}</td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="5">Нет сеансов. Запустите seed.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </article>
+</section>
+{% endblock %}

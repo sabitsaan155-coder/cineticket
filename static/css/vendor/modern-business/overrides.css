@@ -1,0 +1,30 @@
+.tpl-hero {
+  width: 100%;
+  position: relative;
+  background: transparent;
+}
+
+.tpl-hero-content {
+  width: 100%;
+  max-width: none;
+}
+
+.tpl-hero .kicker {
+  margin-bottom: 0.75rem;
+}
+
+.tpl-hero h1,
+.tpl-hero p {
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.tpl-hero-actions {
+  justify-content: center;
+}
+
+.tpl-hero.bg-dark,
+.tpl-hero.modern-business-hero {
+  background: transparent;
+}

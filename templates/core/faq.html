@@ -1,3 +1,73 @@
-﻿{% extends 'base.html' %}
+{% extends 'base.html' %}
 {% block title %}FAQ{% endblock %}
-{% block content %}<section class="hero"><h1>FAQ</h1><p>Часто задаваемые вопросы.</p></section>{% endblock %}
+{% block content %}
+<section class="faq-page">
+  <h1>FAQ</h1>
+  <p class="cinemas-subtitle">Часто задаваемые вопросы по работе сервиса CineTicket.</p>
+
+  <div class="faq-list">
+    <details class="faq-item" open>
+      <summary>Как купить билет?</summary>
+      <div class="faq-answer">
+        <p>Чтобы купить билет:</p>
+        <ol>
+          <li>Выберите фильм.</li>
+          <li>Нажмите кнопку «Купить билеты».</li>
+          <li>Выберите тип билета (Взрослый, Студент, Детский).</li>
+          <li>Укажите количество.</li>
+          <li>Подтвердите покупку.</li>
+        </ol>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>Нужно ли регистрироваться для покупки?</summary>
+      <div class="faq-answer">
+        <p>Да. Покупка билетов доступна только зарегистрированным пользователям.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>Где посмотреть купленные билеты?</summary>
+      <div class="faq-answer">
+        <p>Перейдите в раздел «Профиль → История покупок». Там отображаются все приобретённые билеты.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>Можно ли добавить фильм в избранное?</summary>
+      <div class="faq-answer">
+        <p>Да. Нажмите на иконку звезды рядом с фильмом. Фильм появится в разделе «Избранное».</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>Можно ли вернуть билет?</summary>
+      <div class="faq-answer">
+        <p>В текущей версии проекта возврат билетов не реализован.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>Какие типы билетов доступны?</summary>
+      <div class="faq-answer">
+        <p>Доступны три типа билетов: Взрослый, Студент, Детский. Стоимость зависит от выбранной категории.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>Как связаться с поддержкой?</summary>
+      <div class="faq-answer">
+        <p>Связаться можно по электронной почте: <a href="{% url 'core:contacts' %}#contact-form">sabitsaan155@gmail.com</a>.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>Это настоящий сервис?</summary>
+      <div class="faq-answer">
+        <p>Нет. CineTicket — учебный проект, созданный в рамках курса по веб-программированию.</p>
+      </div>
+    </details>
+  </div>
+</section>
+{% endblock %}

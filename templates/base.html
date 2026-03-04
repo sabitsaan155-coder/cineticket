@@ -1,58 +1,121 @@
-﻿{% load static %}
+{% load static %}
 <!doctype html>
-<html lang="ru" data-theme="dark">
+<html lang="ru">
 <head>
-  <meta charset="utf-8">
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}CineTicket{% endblock %}</title>
-  <link rel="stylesheet" href="{% static 'css/main.css' %}?v=20260224b">
+  <link rel="icon" type="image/x-icon" href="{% static 'images/vendor/modern-business/favicon.ico' %}">
+  <link rel="stylesheet" href="{% static 'css/vendor/modern-business/styles.css' %}?v=20260303a">
+  <link rel="stylesheet" href="{% static 'css/vendor/modern-business/overrides.css' %}?v=20260303b">
+  <link rel="stylesheet" href="{% static 'css/main.css' %}?v=20260303a">
 </head>
-<body>
+<body class="d-flex flex-column h-100" data-theme="dark">
   <div class="bg-glow glow-a"></div>
   <div class="bg-glow glow-b"></div>
 
-  <header class="site-header">
-    <div class="container header-inner">
-      <a class="logo" href="{% url 'core:home' %}">CineTicket</a>
-      <nav class="nav">
-        <a href="{% url 'core:home' %}" class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}">Главная</a>
-        <a href="{% url 'core:movies' %}" class="nav-link {% if request.resolver_match.url_name == 'movies' %}active{% endif %}">Фильмы</a>
-        <a href="{% url 'core:schedule' %}" class="nav-link {% if request.resolver_match.url_name == 'schedule' %}active{% endif %}">Расписание</a>
-        <a href="{% url 'core:cinemas' %}" class="nav-link {% if request.resolver_match.url_name == 'cinemas' %}active{% endif %}">Кинотеатры</a>
-        <a href="{% url 'core:tickets' %}" class="nav-link {% if request.resolver_match.url_name == 'tickets' %}active{% endif %}">Билеты</a>
-        <a href="{% url 'core:contacts' %}" class="nav-link {% if request.resolver_match.url_name == 'contacts' %}active{% endif %}">Контакты</a>
-      </nav>
-      <button id="themeToggle" class="theme-toggle" type="button">Тема</button>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark site-header modern-business-navbar">
+    <div class="container px-5 header-inner">
+      <a class="navbar-brand logo" href="{% url 'core:home' %}">CineTicket</a>
+      <button class="navbar-toggler" type="button" data-navbar-toggle data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Открыть меню">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0 nav">
+          <li class="nav-item">
+            <a href="{% url 'core:home' %}" class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}">Главная</a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'core:movies' %}" class="nav-link {% if request.resolver_match.url_name == 'movies' or request.resolver_match.url_name == 'movie_detail' %}active{% endif %}">Фильмы</a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'core:schedule' %}" class="nav-link {% if request.resolver_match.url_name == 'schedule' or request.resolver_match.url_name == 'schedule_cinema' %}active{% endif %}">Расписание</a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'core:cinemas' %}" class="nav-link {% if request.resolver_match.url_name == 'cinemas' %}active{% endif %}">Кинотеатры</a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'core:contacts' %}" class="nav-link {% if request.resolver_match.url_name == 'contacts' %}active{% endif %}">Контакты</a>
+          </li>
+          {% if user.is_authenticated %}
+            <li class="nav-item">
+              <a href="{% url 'core:tickets' %}" class="nav-link {% if request.resolver_match.url_name == 'tickets' %}active{% endif %}">Билеты</a>
+            </li>
+            <li class="nav-item">
+              <a href="{% url 'core:favorites' %}" class="nav-link {% if request.resolver_match.url_name == 'favorites' %}active{% endif %}">Избранное</a>
+            </li>
+            <li class="nav-item">
+              <a href="{% url 'core:profile' %}" class="nav-link nav-user {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
+                <img
+                  class="nav-avatar"
+                  src="{% if nav_profile and nav_profile.avatar %}{{ nav_profile.avatar.url }}{% else %}{% static 'images/avatar-placeholder.svg' %}{% endif %}"
+                  alt="Аватар {{ user.username }}"
+                >
+                <span>Привет, {{ user.username }}</span>
+              </a>
+            </li>
+            <li class="nav-item nav-item-actions">
+              <button id="themeToggle" class="theme-toggle btn btn-outline-light" type="button">Тема</button>
+            </li>
+            <li class="nav-item nav-item-actions">
+              <form method="post" action="{% url 'accounts:logout' %}" class="nav-logout-form">
+                {% csrf_token %}
+                <button type="submit" class="nav-logout-btn">Выйти</button>
+              </form>
+            </li>
+          {% else %}
+            <li class="nav-item">
+              <a href="{% url 'accounts:register' %}" class="nav-link {% if request.resolver_match.app_name == 'accounts' and request.resolver_match.url_name == 'register' %}active{% endif %}">Регистрация</a>
+            </li>
+            <li class="nav-item">
+              <a href="{% url 'accounts:login' %}" class="nav-link {% if request.resolver_match.app_name == 'accounts' and request.resolver_match.url_name == 'login' %}active{% endif %}">Войти</a>
+            </li>
+            <li class="nav-item nav-item-actions">
+              <button id="themeToggle" class="theme-toggle btn btn-outline-light" type="button">Тема</button>
+            </li>
+          {% endif %}
+        </ul>
+      </div>
     </div>
-  </header>
+  </nav>
 
-  <main class="site-main">
-    <div class="container">
-      {% include 'partials/messages.html' %}
-      {% block content %}{% endblock %}
-    </div>
+  <main class="site-main flex-shrink-0">
+    {% block main_content %}
+      <div class="container">
+        {% include 'partials/messages.html' %}
+        {% block content %}{% endblock %}
+      </div>
+    {% endblock %}
   </main>
 
-  <footer class="site-footer">
-    <div class="container footer-grid">
-      <div>
-        <p><strong>CineTicket</strong></p>
-        <p>Кино-афиша и онлайн-билеты.</p>
-      </div>
-      <div>
-        <a href="tel:+77072982006" class="contact-link">+7 707 298 2006</a>
-        <a href="https://wa.me/77072982006" class="contact-link" target="_blank" rel="noopener noreferrer" aria-label="Написать в WhatsApp на номер +7 707 298 2006">WhatsApp</a>
-        <a href="mailto:sabitsaan155@gmail.com" class="contact-link">sabitsaan155@gmail.com</a>
-        <a href="{% url 'core:faq' %}" class="contact-link">FAQ</a>
-      </div>
-      <div>
-        <a href="{% url 'core:profile' %}" class="contact-link">Профиль</a>
-        <a href="{% url 'core:favorites' %}" class="contact-link">Избранное</a>
-        <a href="{% url 'core:checkout' %}" class="contact-link">Оформление</a>
+  <footer class="bg-dark py-4 mt-auto site-footer">
+    <div class="container px-5">
+      <div class="row align-items-center justify-content-between flex-column flex-sm-row">
+        <div class="col-auto">
+          <div class="small m-0 text-white">
+            <strong>CineTicket</strong> — кино-афиша и онлайн-билеты.
+          </div>
+          <div class="small m-0 text-white-50">
+            Design based on free template:
+            <a class="link-light small footer-inline-link" href="https://startbootstrap.com/template/modern-business" target="_blank" rel="noopener noreferrer">Start Bootstrap – Modern Business</a>
+          </div>
+        </div>
+        <div class="col-auto footer-links text-center text-sm-end">
+          <a href="https://wa.me/77072982006" class="link-light small contact-link" target="_blank" rel="noopener noreferrer" aria-label="Написать в WhatsApp на номер +7 707 298 2006">WhatsApp</a>
+          <span class="text-white mx-1">&middot;</span>
+          <a href="{% url 'core:contacts' %}#contact-form" class="link-light small contact-link">sabitsaan155@gmail.com</a>
+          <span class="text-white mx-1">&middot;</span>
+          <a href="{% url 'core:about' %}" class="link-light small contact-link">О проекте</a>
+          <span class="text-white mx-1">&middot;</span>
+          <a href="{% url 'core:faq' %}" class="link-light small contact-link">FAQ</a>
+        </div>
       </div>
     </div>
   </footer>
 
-  <script src="{% static 'js/main.js' %}?v=20260224b"></script>
+  <button id="scrollTopButton" class="scroll-top-btn" type="button" aria-label="Наверх">↑</button>
+
+  <script src="{% static 'js/vendor/modern-business/scripts.js' %}?v=20260303a"></script>
+  <script src="{% static 'js/main.js' %}?v=20260303a"></script>
 </body>
 </html>

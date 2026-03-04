@@ -1,3 +1,92 @@
-﻿{% extends 'base.html' %}
+{% extends 'base.html' %}
+{% load static %}
 {% block title %}Профиль{% endblock %}
-{% block content %}<section class="hero"><h1>Профиль</h1><p>Личный кабинет пользователя.</p></section>{% endblock %}
+{% block content %}
+<section class="profile-page">
+  <h1>Профиль</h1>
+
+  <div class="profile-card profile-head-card">
+    <img
+      class="profile-avatar"
+      src="{% if profile_obj.avatar %}{{ profile_obj.avatar.url }}{% else %}{% static 'images/avatar-placeholder.svg' %}{% endif %}"
+      alt="Аватар пользователя {{ user.username }}"
+    >
+    <div>
+      <p><strong>Логин:</strong> {{ user.username }}</p>
+      <p><strong>Email:</strong> {{ user.email|default:"—" }}</p>
+      <p><strong>Номер телефона:</strong> {{ profile_obj.phone_number|default:"—" }}</p>
+      <p><a class="btn-secondary" href="{% url 'accounts:password_change' %}">Сменить пароль</a></p>
+    </div>
+  </div>
+
+  <div class="buy-form profile-edit-form">
+    <h2>Редактировать профиль</h2>
+    <form method="post" enctype="multipart/form-data" class="profile-edit-form-body">
+      {% csrf_token %}
+
+      <label for="{{ form.avatar.id_for_label }}">Аватар</label>
+      <div class="profile-avatar-upload">
+        {{ form.avatar }}
+      </div>
+      {% if form.avatar.errors %}<div class="form-error">{{ form.avatar.errors }}</div>{% endif %}
+
+      <label for="{{ form.phone_number.id_for_label }}">Номер телефона</label>
+      {{ form.phone_number }}
+      {% if form.phone_number.errors %}<div class="form-error">{{ form.phone_number.errors }}</div>{% endif %}
+
+      <label for="{{ form.bio.id_for_label }}">О себе</label>
+      {{ form.bio }}
+      {% if form.bio.errors %}<div class="form-error">{{ form.bio.errors }}</div>{% endif %}
+
+      {% if form.non_field_errors %}<div class="form-error">{{ form.non_field_errors }}</div>{% endif %}
+
+      <div class="profile-form-actions">
+        <button type="submit" class="btn-primary">Сохранить</button>
+      </div>
+    </form>
+  </div>
+
+  <h2>История покупок</h2>
+  {% if purchases %}
+    <div class="tickets-table-wrap">
+      <table class="tickets-table">
+        <thead>
+          <tr>
+            <th>Фильм</th>
+            <th>Позиции</th>
+            <th>Итоговая сумма</th>
+            <th>Дата покупки</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for purchase in purchases %}
+            <tr>
+              <td>{{ purchase.movie_title }}</td>
+              <td>
+                {% if purchase.items.exists %}
+                  <ul class="purchase-items-list">
+                    {% for item in purchase.items.all %}
+                      <li>{{ item.get_ticket_type_display }}: {{ item.price_per_ticket }} ₸ × {{ item.quantity }} = {{ item.line_total }} ₸</li>
+                    {% endfor %}
+                  </ul>
+                {% else %}
+                  <ul class="purchase-items-list">
+                    <li>{{ purchase.get_ticket_type_display }}: {{ purchase.price_per_ticket }} ₸ × {{ purchase.quantity }} = {{ purchase.total_price }} ₸</li>
+                  </ul>
+                {% endif %}
+              </td>
+              <td>{{ purchase.total_price }} ₸</td>
+              <td>{{ purchase.created_at|date:"d.m.Y H:i" }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="empty-tickets">
+      <p>У вас пока нет покупок.</p>
+      <a class="btn-primary" href="{% url 'core:movies' %}">Перейти к фильмам</a>
+    </div>
+  {% endif %}
+</section>
+{% endblock %}

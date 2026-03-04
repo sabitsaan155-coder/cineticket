@@ -1,12 +1,37 @@
-﻿{% extends 'base.html' %}
+{% extends 'base.html' %}
 
-{% block title %}Sign In · GearLoop{% endblock %}
+{% block title %}Вход{% endblock %}
 
 {% block content %}
-  <h1>Sign in</h1>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Sign in</button>
-  </form>
+<section class="buy-page">
+  <h1>Войти</h1>
+  <div class="buy-layout">
+    <form method="post" class="buy-form">
+      {% csrf_token %}
+      {% if form.non_field_errors %}
+        <div class="form-error">{{ form.non_field_errors }}</div>
+      {% endif %}
+
+      <label for="id_username">Логин</label>
+      {{ form.username }}
+      {% if form.username.errors %}<div class="form-error">{{ form.username.errors }}</div>{% endif %}
+
+      <label for="id_password">Пароль</label>
+      {{ form.password }}
+      {% if form.password.errors %}<div class="form-error">{{ form.password.errors }}</div>{% endif %}
+      <p style="margin-top: 8px;">
+        <a class="card-link" href="{% url 'accounts:password_reset' %}">Забыли пароль?</a>
+      </p>
+
+      {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+      <button type="submit" class="btn-primary">Войти</button>
+    </form>
+
+    <aside class="ticket-prices">
+      <h3>Новый пользователь?</h3>
+      <p>Создайте аккаунт, чтобы покупать и хранить свои билеты.</p>
+      <a class="btn-secondary" href="{% url 'accounts:register' %}">Регистрация</a>
+    </aside>
+  </div>
+</section>
 {% endblock %}

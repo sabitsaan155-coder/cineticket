@@ -1,67 +1,59 @@
-﻿{% extends 'base.html' %}
+{% extends 'base.html' %}
 {% block title %}Главная{% endblock %}
-{% block content %}
-<section class="home-hero">
-  <div class="hero-copy">
+{% block main_content %}
+{% include 'partials/messages.html' %}
+<section class="tpl-hero modern-business-hero py-5">
+  <div class="tpl-hero-content px-5 py-5 text-center">
     <p class="kicker">Премьеры недели</p>
-    <h1>Кино-афиша и онлайн-билеты</h1>
-    <p>Выбирайте фильм, сеанс и место за пару минут. Весь каталог и бронирование в одном сервисе.</p>
-    <div class="hero-actions">
-      <a href="{% url 'core:movies' %}" class="btn-primary">Смотреть фильмы</a>
-      <a href="{% url 'core:schedule' %}" class="btn-secondary">Открыть расписание</a>
+    <h1 class="display-5 fw-bolder text-white mb-3">Кино-афиша и онлайн-билеты</h1>
+    <p class="lead fw-normal text-white-50 mb-4">Выбирайте фильм, сеанс и места за пару минут. Весь каталог, избранное, отзывы и покупка билетов собраны в одном сервисе.</p>
+    <div class="d-grid gap-3 d-sm-flex justify-content-sm-center hero-actions tpl-hero-actions">
+      <a class="btn btn-primary btn-lg px-4 me-sm-3" href="{% url 'core:movies' %}">Смотреть фильмы</a>
+      <a class="btn btn-outline-light btn-lg px-4 btn-secondary" href="{% url 'core:schedule' %}">Открыть расписание</a>
     </div>
-    <div class="hero-stats">
-      <div class="stat-item">
-        <strong>120+</strong>
-        <span>сеансов в день</span>
-      </div>
-      <div class="stat-item">
-        <strong>18</strong>
-        <span>кинотеатров</span>
-      </div>
-      <div class="stat-item">
-        <strong>4.8</strong>
-        <span>средняя оценка</span>
-      </div>
-    </div>
-  </div>
-  <div class="hero-cards">
-    <article class="quick-card">
-      <h3>Сейчас в прокате</h3>
-      <p>Лучшие релизы этой недели.</p>
-      <a href="{% url 'core:movies' %}" class="card-link">Перейти</a>
-    </article>
-    <article class="quick-card">
-      <h3>Ближайшие сеансы</h3>
-      <p>Подборка сеансов на сегодня.</p>
-      <a href="{% url 'core:schedule' %}" class="card-link">Выбрать время</a>
-    </article>
-    <article class="quick-card">
-      <h3>Контакты</h3>
-      <p>Телефон, WhatsApp и email для связи.</p>
-      <a href="{% url 'core:contacts' %}" class="card-link">Связаться</a>
-    </article>
   </div>
 </section>
 
-<section class="featured-grid">
-  <article class="featured-card">
-    <p class="featured-type">Экшен</p>
-    <h3>Ночной Экспресс</h3>
-    <p>Один рейс и одна ночь, чтобы остановить преступную группировку.</p>
-    <a href="{% url 'core:movies' %}" class="card-link">Подробнее</a>
-  </article>
-  <article class="featured-card">
-    <p class="featured-type">Фантастика</p>
-    <h3>Пыль Марса</h3>
-    <p>Экспедиция сталкивается с аномалией, меняющей представление о времени.</p>
-    <a href="{% url 'core:movies' %}" class="card-link">Подробнее</a>
-  </article>
-  <article class="featured-card">
-    <p class="featured-type">Триллер</p>
-    <h3>Город Теней</h3>
-    <p>Детектив расследует серию исчезновений в городе, где каждая улица хранит секрет.</p>
-    <a href="{% url 'core:movies' %}" class="card-link">Подробнее</a>
-  </article>
-</section>
+<div class="container">
+  <section class="featured-grid">
+    {% for item in featured_movies %}
+      <article class="featured-card">
+        <p class="featured-type">{{ item.tag }}</p>
+        <h3>{{ item.movie.title }}</h3>
+        <p>{{ item.movie.description }}</p>
+        <a href="{% url 'core:movie_detail' item.movie.slug %}" class="card-link">Подробнее</a>
+      </article>
+    {% endfor %}
+  </section>
+
+  <section class="home-carousels">
+    <h2>Рекомендации</h2>
+    <div class="home-carousel-grid">
+      {% for carousel in home_carousels %}
+        <article class="home-carousel" data-carousel data-interval="{{ carousel.interval_ms }}">
+          {% for slide in carousel.slides %}
+            <div class="home-carousel-slide {% if forloop.first %}is-active{% endif %}" data-carousel-slide>
+              <img src="{{ slide.poster_url }}" alt="{{ slide.title }}">
+              <div class="home-carousel-overlay">
+                <p class="home-carousel-badge">{{ carousel.title }}</p>
+                <h3>{{ slide.title }}</h3>
+                <a class="btn-primary" href="{% url 'core:movie_detail' slide.slug %}">{{ carousel.cta }}</a>
+              </div>
+            </div>
+          {% endfor %}
+          <div class="home-carousel-dots">
+            {% for slide in carousel.slides %}
+              <button
+                type="button"
+                class="home-carousel-dot {% if forloop.first %}is-active{% endif %}"
+                data-carousel-dot
+                aria-label="Слайд {{ forloop.counter }}"
+              ></button>
+            {% endfor %}
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  </section>
+</div>
 {% endblock %}

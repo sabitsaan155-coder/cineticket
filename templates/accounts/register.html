@@ -1,12 +1,46 @@
-﻿{% extends 'base.html' %}
+{% extends 'base.html' %}
 
-{% block title %}Create account · GearLoop{% endblock %}
+{% block title %}Регистрация{% endblock %}
 
 {% block content %}
-  <h1>Create account</h1>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Register</button>
-  </form>
+<section class="buy-page">
+  <h1>Регистрация</h1>
+  <div class="buy-layout">
+    <form method="post" class="buy-form">
+      {% csrf_token %}
+      {% if form.non_field_errors %}
+        <div class="form-error">{{ form.non_field_errors }}</div>
+      {% endif %}
+
+      <label for="id_username">Логин</label>
+      {{ form.username }}
+      {% if form.username.errors %}<div class="form-error">{{ form.username.errors }}</div>{% endif %}
+
+      <label for="id_email">Email</label>
+      {{ form.email }}
+      {% if form.email.errors %}<div class="form-error">{{ form.email.errors }}</div>{% endif %}
+
+      <label for="id_phone_number">Номер телефона</label>
+      {{ form.phone_number }}
+      {% if form.phone_number.errors %}<div class="form-error">{{ form.phone_number.errors }}</div>{% endif %}
+
+      <label for="id_password1">Пароль</label>
+      {{ form.password1 }}
+      {% if form.password1.errors %}<div class="form-error">{{ form.password1.errors }}</div>{% endif %}
+
+      <label for="id_password2">Подтверждение пароля</label>
+      {{ form.password2 }}
+      {% if form.password2.errors %}<div class="form-error">{{ form.password2.errors }}</div>{% endif %}
+
+      {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+      <button type="submit" class="btn-primary">Создать аккаунт</button>
+    </form>
+
+    <aside class="ticket-prices">
+      <h3>Уже есть аккаунт?</h3>
+      <a class="btn-secondary" href="{% url 'accounts:login' %}">Войти</a>
+      <p style="margin-top: 12px; color: var(--muted); line-height: 1.5;">Если у вас уже есть аккаунт, нажмите кнопку «Войти», чтобы не создавать уже существующий аккаунт.</p>
+    </aside>
+  </div>
+</section>
 {% endblock %}

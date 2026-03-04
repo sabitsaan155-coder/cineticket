@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% block title %}{{ movie.title }}{% endblock %}
+{% block content %}
+<section class="movie-detail-page">
+  <article class="movie-detail-card">
+    <div class="movie-detail-poster" style="background-image: url('{{ movie.poster_url }}');"></div>
+    <div class="movie-detail-content">
+      <h1>{{ movie.title }}</h1>
+      <p><strong>Возраст:</strong> {{ movie.age_rating }}</p>
+      <p><strong>Длительность:</strong> {{ movie.duration }}</p>
+      <p>{{ movie.description }}</p>
+
+      <div class="movie-rating-box">
+        <p><strong>Средний рейтинг:</strong>
+          {% if avg_rating %}
+            {{ avg_rating|floatformat:1 }}/5
+          {% else %}
+            пока нет оценок
+          {% endif %}
+        </p>
+        <p><strong>Отзывов:</strong> {{ review_count }}</p>
+      </div>
+
+      <div class="ticket-tariff-block">
+        <p><strong>Тарифы:</strong></p>
+        <ul class="ticket-tariff-list">
+          {% for tariff in ticket_tariffs %}
+            <li>{{ tariff.label }} — {{ tariff.price }} тг</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="movie-actions">
+        <a class="btn-primary" href="{% url 'core:buy_tickets' %}?movie={{ movie.title|urlencode }}">Купить билеты</a>
+        <button class="btn-secondary copy-link-btn" type="button" data-copy-movie-link>Копировать ссылку</button>
+        {% if user.is_authenticated %}
+          <form
+            method="post"
+            action="{% url 'core:toggle_favorite' %}"
+            class="favorite-form"
+            {% if is_favorite %}data-confirm="Удалить фильм из избранного?"{% endif %}
+          >
+            {% csrf_token %}
+            <input type="hidden" name="movie_title" value="{{ movie.title }}">
+            <input type="hidden" name="next" value="{{ request.get_full_path }}">
+            <button
+              class="favorite-btn {% if is_favorite %}is-active{% endif %}"
+              type="submit"
+              aria-label="{% if is_favorite %}Убрать из избранного{% else %}Добавить в избранное{% endif %}"
+            >
+              {% if is_favorite %}★{% else %}☆{% endif %}
+            </button>
+          </form>
+        {% endif %}
+      </div>
+    </div>
+  </article>
+
+  <section class="reviews-section">
+    <h2>Отзывы</h2>
+    {% if db_movie %}
+      {% if user.is_authenticated %}
+        <div class="buy-form">
+          <h3>{% if user_review %}Ваш отзыв{% else %}Оставить отзыв{% endif %}</h3>
+          <form method="post" action="{% url 'reviews:upsert' movie.slug %}">
+            {% csrf_token %}
+            <label for="{{ review_form.rating.id_for_label }}">Оценка (1-5)</label>
+            {{ review_form.rating }}
+            {% if review_form.rating.errors %}<div class="form-error">{{ review_form.rating.errors }}</div>{% endif %}
+
+            <label for="{{ review_form.comment.id_for_label }}">Комментарий</label>
+            {{ review_form.comment }}
+            {% if review_form.comment.errors %}<div class="form-error">{{ review_form.comment.errors }}</div>{% endif %}
+
+            <button class="btn-primary" type="submit">{% if user_review %}Обновить отзыв{% else %}Сохранить отзыв{% endif %}</button>
+          </form>
+          {% if user_review %}
+            <form method="post" action="{% url 'reviews:delete' movie.slug %}" style="margin-top: 10px;" data-confirm="Удалить ваш отзыв?">
+              {% csrf_token %}
+              <button class="btn-secondary" type="submit">Удалить мой отзыв</button>
+            </form>
+          {% endif %}
+        </div>
+      {% else %}
+        <p>Войдите, чтобы оставить отзыв: <a class="card-link" href="{% url 'accounts:login' %}?next={{ request.get_full_path|urlencode }}">войти</a>.</p>
+      {% endif %}
+
+      <div class="ticket-prices" style="margin-top: 14px;">
+        <h3>Последние отзывы</h3>
+        {% for review in recent_reviews %}
+          <div class="review-item">
+            <p><strong>{{ review.user.username }}</strong> — {{ review.rating }}/5</p>
+            {% if review.comment %}<p>{{ review.comment }}</p>{% endif %}
+            <p class="movies-subtitle">{{ review.created_at|date:"d.m.Y H:i" }}</p>
+          </div>
+        {% empty %}
+          <p>Пока отзывов нет.</p>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p>Для этого фильма ORM-запись пока не создана, поэтому отзывы временно недоступны.</p>
+    {% endif %}
+  </section>
+</section>
+{% endblock %}

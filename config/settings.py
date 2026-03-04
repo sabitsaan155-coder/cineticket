@@ -7,6 +7,9 @@ env = environ.Env(
     DEBUG=(bool, False),
     ALLOWED_HOSTS=(list, []),
     CSRF_TRUSTED_ORIGINS=(list, []),
+    EMAIL_BACKEND=(str, 'django.core.mail.backends.console.EmailBackend'),
+    DEFAULT_FROM_EMAIL=(str, 'no-reply@cineticket.local'),
+    CONTACT_RECEIVER_EMAIL=(str, 'sabitsaan155@gmail.com'),
 )
 
 environ.Env.read_env(BASE_DIR / '.env')
@@ -60,6 +63,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'accounts.context_processors.nav_profile',
             ],
         },
     },
@@ -100,6 +104,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = 'accounts:login'
 LOGIN_REDIRECT_URL = 'core:home'
 LOGOUT_REDIRECT_URL = 'core:home'
+
+EMAIL_BACKEND = env('EMAIL_BACKEND')
+DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL')
+CONTACT_RECEIVER_EMAIL = env('CONTACT_RECEIVER_EMAIL')
 
 SECURE_SSL_REDIRECT = env.bool('SECURE_SSL_REDIRECT', default=False)
 SESSION_COOKIE_SECURE = env.bool('SESSION_COOKIE_SECURE', default=False)

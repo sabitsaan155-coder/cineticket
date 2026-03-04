@@ -1,3 +1,49 @@
-﻿{% extends 'base.html' %}
+{% extends 'base.html' %}
 {% block title %}Избранное{% endblock %}
-{% block content %}<section class="hero"><h1>Избранное</h1><p>Сохраненные фильмы.</p></section>{% endblock %}
+{% block content %}
+<section class="movies-page-list">
+  <h1>Избранное</h1>
+  <p class="movies-subtitle">Ваши сохраненные фильмы.</p>
+
+  {% if movies %}
+    <div class="movies-grid-list">
+      {% for movie in movies %}
+        <article class="movie-item-card">
+          <div class="movie-item-poster" style="background-image: url('{{ movie.poster_url }}');"></div>
+          <h3>{{ forloop.counter }}. {{ movie.title }}</h3>
+          <p><strong>Возраст:</strong> {{ movie.age_rating }}</p>
+          <p><strong>Длительность:</strong> {{ movie.duration }}</p>
+          <div class="ticket-tariff-block">
+            <p><strong>Тарифы:</strong></p>
+            <ul class="ticket-tariff-list">
+              {% for tariff in ticket_tariffs %}
+                <li>{{ tariff.label }} — {{ tariff.price }} тг</li>
+              {% endfor %}
+            </ul>
+          </div>
+          <p><strong>Описание:</strong> {{ movie.description }}</p>
+          <div class="movie-actions">
+            <a class="btn-primary buy-ticket-btn" href="{% url 'core:buy_tickets' %}?movie={{ movie.title|urlencode }}">Купить билеты</a>
+            <form
+              method="post"
+              action="{% url 'core:toggle_favorite' %}"
+              class="favorite-form"
+              data-confirm="Удалить фильм из избранного?"
+            >
+              {% csrf_token %}
+              <input type="hidden" name="movie_title" value="{{ movie.title }}">
+              <input type="hidden" name="next" value="{{ request.get_full_path }}">
+              <button class="favorite-btn is-active" type="submit" aria-label="Убрать из избранного">★</button>
+            </form>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-tickets">
+      <p>В избранном пока нет фильмов.</p>
+      <a class="btn-primary" href="{% url 'core:movies' %}">Перейти к фильмам</a>
+    </div>
+  {% endif %}
+</section>
+{% endblock %}

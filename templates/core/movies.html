@@ -1,3 +1,99 @@
-﻿{% extends 'base.html' %}
+{% extends 'base.html' %}
+{% load querystring_tags %}
 {% block title %}Фильмы{% endblock %}
-{% block content %}<section class="hero"><h1>Фильмы</h1><p>Каталог фильмов.</p></section>{% endblock %}
+{% block content %}
+<section class="movies-page-list">
+  <h1>Фильмы</h1>
+  <p class="movies-subtitle">Каталог доступных фильмов</p>
+
+  <form method="get" class="movies-filters">
+    <div class="filter-field">
+      <label for="id_q">Поиск по названию</label>
+      <input id="id_q" type="text" name="q" value="{{ search_query }}" placeholder="Например, Interstellar">
+    </div>
+    <div class="filter-field">
+      <label for="id_age">Возраст</label>
+      <select id="id_age" name="age">
+        <option value="">Все</option>
+        {% for option in age_options %}
+          <option value="{{ option }}" {% if age_filter == option %}selected{% endif %}>{{ option }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <button class="btn-secondary" type="submit">Применить</button>
+    <a class="btn-secondary" href="{% url 'core:movies' %}" data-filters-reset>Сбросить</a>
+  </form>
+
+  <div class="movies-grid-list">
+    {% for movie in movies %}
+      <article class="movie-item-card">
+        <div class="movie-item-poster" style="background-image: url('{{ movie.poster_url }}');"></div>
+        <h3>{{ forloop.counter }}. {{ movie.title }}</h3>
+        {% with stat=movie_rating_stats|get_item:movie.slug %}
+          {% if stat and stat.review_count %}
+            <p><strong>Рейтинг:</strong> {{ stat.avg_rating|floatformat:1 }}/5 ({{ stat.review_count }})</p>
+          {% else %}
+            <p><strong>Рейтинг:</strong> пока нет отзывов</p>
+          {% endif %}
+        {% endwith %}
+        <p><strong>Возраст:</strong> {{ movie.age_rating }}</p>
+        <p><strong>Длительность:</strong> {{ movie.duration }}</p>
+        <div class="ticket-tariff-block">
+          <p><strong>Тарифы:</strong></p>
+          <ul class="ticket-tariff-list">
+            {% for tariff in ticket_tariffs %}
+              <li>{{ tariff.label }} — {{ tariff.price }} тг</li>
+            {% endfor %}
+          </ul>
+        </div>
+        <p><strong>Описание:</strong> {{ movie.description }}</p>
+        <div class="movie-actions">
+          <a class="btn-secondary" href="{% url 'core:movie_detail' movie.slug %}">Подробнее</a>
+          <a class="btn-primary buy-ticket-btn" href="{% url 'core:buy_tickets' %}?movie={{ movie.title|urlencode }}">Купить билеты</a>
+          {% if user.is_authenticated %}
+            <form
+              method="post"
+              action="{% url 'core:toggle_favorite' %}"
+              class="favorite-form"
+              {% if movie.title in favorite_titles %}data-confirm="Удалить фильм из избранного?"{% endif %}
+            >
+              {% csrf_token %}
+              <input type="hidden" name="movie_title" value="{{ movie.title }}">
+              <input type="hidden" name="next" value="{{ request.get_full_path }}">
+              <button
+                class="favorite-btn {% if movie.title in favorite_titles %}is-active{% endif %}"
+                type="submit"
+                aria-label="{% if movie.title in favorite_titles %}Убрать из избранного{% else %}Добавить в избранное{% endif %}"
+              >
+                {% if movie.title in favorite_titles %}★{% else %}☆{% endif %}
+              </button>
+            </form>
+          {% else %}
+            <a class="favorite-btn-link" href="{% url 'accounts:login' %}?next={{ request.get_full_path|urlencode }}" aria-label="Войдите, чтобы добавить в избранное">☆</a>
+          {% endif %}
+        </div>
+      </article>
+    {% empty %}
+      <article class="movie-item-card">
+        <h3>Ничего не найдено</h3>
+        <p>Попробуйте изменить фильтры или сбросить поиск.</p>
+        <a class="btn-secondary" href="{% url 'core:movies' %}">Сбросить фильтры</a>
+      </article>
+    {% endfor %}
+  </div>
+
+  {% if is_paginated %}
+    <nav class="catalog-pagination" aria-label="Пагинация каталога">
+      {% if page_obj.has_previous %}
+        <a class="btn-secondary" href="{% url 'core:movies' %}{% querystring request page=page_obj.previous_page_number %}">Назад</a>
+      {% endif %}
+
+      <span class="pagination-state">Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+
+      {% if page_obj.has_next %}
+        <a class="btn-secondary" href="{% url 'core:movies' %}{% querystring request page=page_obj.next_page_number %}">Вперёд</a>
+      {% endif %}
+    </nav>
+  {% endif %}
+</section>
+{% endblock %}
